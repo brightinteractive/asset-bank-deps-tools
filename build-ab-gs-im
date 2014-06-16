@@ -28,6 +28,7 @@ if [ -e /usr/bin/gs ]; then
     exit 1
 fi
 
+GHOSTSCRIPT_PREFIX="/usr/local/assetbank/ghostscript-${GHOSTSCRIPT_VERSION}"
 if [ -e "$GHOSTSCRIPT_PREFIX" ]; then
     rm -r "$GHOSTSCRIPT_PREFIX"
 fi
@@ -37,7 +38,6 @@ tar -xzf "$GHOSTSCRIPT_TARBALL"
 cd "ghostscript-$GHOSTSCRIPT_VERSION"
 GHOSTSCRIPT_BUILDDIR="`pwd`"
 echo Building Ghostscript in $GHOSTSCRIPT_BUILDDIR
-GHOSTSCRIPT_PREFIX="/usr/local/assetbank/ghostscript-${GHOSTSCRIPT_VERSION}"
 ./configure --prefix="$GHOSTSCRIPT_PREFIX"
 make $MAKE_JOBS
 make install
