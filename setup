@@ -16,10 +16,22 @@ fi
 BUILD_USER="$1"
 BUILD_GID=`id "$BUILD_USER" -g`
 
-mkdir /usr/local/assetbank
-chown "$BUILD_USER:$BUILD_GID" /usr/local/assetbank
+if [ ! -e /usr/local/assetbank ]; then
+    mkdir /usr/local/assetbank
+    chown "$BUILD_USER:$BUILD_GID" /usr/local/assetbank
+fi
+
+# If this fails then add:
+#  deb http://www.deb-multimedia.org wheezy main non-free
+# to /etc/apt/sources.list and then do:
+#  apt-get update
+#  apt-get install deb-multimedia-keyring
+#  apt-get update
+apt-get install libfaac-dev
 
 # This results in ghostscript being installed and then immediately removed,
 # but there doesn't seem to be a way to install all the build-deps of a
 # package *except* a particular package.
-apt-get build-dep -y ghostscript imagemagick && apt-get remove -y ghostscript
+apt-get build-dep -y ghostscript imagemagick ffmpeg
+apt-get remove -y ghostscript
+apt-get remove -y ffmpeg
