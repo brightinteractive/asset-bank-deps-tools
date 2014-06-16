@@ -49,6 +49,10 @@ fi
 ln -sf "$GHOSTSCRIPT_PREFIX" /usr/local/assetbank/ghostscript
 
 
+IMAGEMAGICK_PREFIX="/usr/local/assetbank/imagemagick-${IMAGEMAGICK_VERSION}"
+if [ -e "$IMAGEMAGICK_PREFIX" ]; then
+    rm -r "$IMAGEMAGICK_PREFIX"
+fi
 cd ~/src
 rm -fr "ImageMagick-$IMAGEMAGICK_VERSION"
 IMAGEMAGICK_PREFIX="/usr/local/assetbank/imagemagick-${IMAGEMAGICK_VERSION}"
@@ -58,7 +62,6 @@ PATH="/usr/local/assetbank/ghostscript/bin:$PATH"
 export PATH
 
 cd "ImageMagick-$IMAGEMAGICK_VERSION"
-IMAGEMAGICK_PREFIX="/usr/local/assetbank/imagemagick-${IMAGEMAGICK_VERSION}"
 ./configure --prefix="$IMAGEMAGICK_PREFIX"
 make $MAKE_JOBS
 make install
