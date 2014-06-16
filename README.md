@@ -45,3 +45,18 @@ Set the following environment variables (either in your user's shell or in
 
 /usr/local/assetbank/{ffmpeg,ghostscript,imagemagick} are symlinks to allow
 easy upgrades without Tomcat restarts on Asset Bank servers.
+
+Notes
+-----
+These scripts build dynamic, not static binaries because static linking
+against glibc is not recommended and it is hard to get an autoconf-based
+build to link dynamically against glibc and statically against everything
+else. Basically, static linking on GNU/Linux seems to be deprecated these
+days.
+
+The fact that the binaries are dynamically linked means that they need
+various libraries to be installed on the systems that they run on. More
+thought needs to be put into how to arrange that, although one quick way
+would be to run the 'setup' script on all target hosts; the 'apt-get
+build-deps' steps should install all the required libraries (along with many
+packages that are not needed, e.g. -dev packages).
