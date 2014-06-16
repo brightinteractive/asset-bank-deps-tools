@@ -10,17 +10,17 @@ IMAGEMAGICK_VERSION=6.8.9-0
 MAKE_JOBS=-j3
 
 if [ $UID -eq 0 ]; then
-    echo This script is not intended to be run as root 2>&1
+    echo This script should not be run as root 2>&1
+    exit 1
+fi
+
+if [ ! -d /usr/local/assetbank ]; then
+    echo /usr/local/assetbank does not exist, please run build-ab-gs-im-setup 2>&1
     exit 1
 fi
 
 GHOSTSCRIPT_TARBALL="${HOME}/software/ghostscript-${GHOSTSCRIPT_VERSION}.tar.gz"
 IMAGEMAGICK_TARBALL="$HOME/software/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-
-# This results in ghostscript being installed and then immediately removed,
-# but there doesn't seem to be a way to install all the build-deps of a
-# package *except* a particular package.2
-su -c "apt-get build-dep -y ghostscript imagemagick && apt-get remove -y ghostscript"
 
 if [ -e /usr/bin/gs ]; then
     echo /usr/bin/gs exists, please uninstall it to avoid the built ImageMagick having dependencies on a system Ghostscript package >&2
@@ -28,7 +28,9 @@ if [ -e /usr/bin/gs ]; then
     exit 1
 fi
 
-su -c "if [ -e \"$GHOSTSCRIPT_PREFIX\" ]; then rm -r \"$GHOSTSCRIPT_PREFIX\"; fi"
+if [ -e "$GHOSTSCRIPT_PREFIX" ]; then
+    rm -r "$GHOSTSCRIPT_PREFIX"
+fi
 cd ~/src
 rm -fr "ghostscript-$GHOSTSCRIPT_VERSION"
 tar -xzf "$GHOSTSCRIPT_TARBALL"
@@ -38,8 +40,13 @@ echo Building Ghostscript in $GHOSTSCRIPT_BUILDDIR
 GHOSTSCRIPT_PREFIX="/usr/local/assetbank/ghostscript-${GHOSTSCRIPT_VERSION}"
 ./configure --prefix="$GHOSTSCRIPT_PREFIX"
 make $MAKE_JOBS
-su -c "make install && ln -sf $GHOSTSCRIPT_PREFIX /usr/local/assetbank/ghostscript"
-su -c "if [ -e /usr/local/assetbank/ghostscript ]; then rm /usr/local/assetbank/ghostscript; fi && ln -sf \"$GHOSTSCRIPT_PREFIX\" /usr/local/assetbank/ghostscript"
+make install
+
+# (re)create symlink
+if [ -e /usr/local/assetbank/ghostscript ]; then
+    rm /usr/local/assetbank/ghostscript;
+fi
+ln -sf "$GHOSTSCRIPT_PREFIX" /usr/local/assetbank/ghostscript
 
 
 cd ~/src
@@ -54,4 +61,10 @@ cd "ImageMagick-$IMAGEMAGICK_VERSION"
 IMAGEMAGICK_PREFIX="/usr/local/assetbank/imagemagick-${IMAGEMAGICK_VERSION}"
 ./configure --prefix="$IMAGEMAGICK_PREFIX"
 make $MAKE_JOBS
-su -c "make install && ln -sf \"$IMAGEMAGICK_PREFIX\" /usr/local/assetbank/imagemagick"
+make install
+
+# (re)create symlink
+if [ -e /usr/local/assetbank/imagemagick ]; then
+    rm /usr/local/assetbank/imagemagick
+fi
+ln -sf "$IMAGEMAGICK_PREFIX" /usr/local/assetbank/imagemagick

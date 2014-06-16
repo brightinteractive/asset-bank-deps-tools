@@ -1,0 +1,25 @@
+#!/bin/bash
+# One-off root setup steps required by build-ab-gs-im
+
+set -e
+
+if [ $UID -ne 0 ]; then
+    exec su -c "$0 $USER"
+fi
+
+if [ $# -ne 1 ]; then
+    echo Usage: $0 BUILD_USER 2>&1
+    echo where BUILD_USER is the user who will run build-ab-gs-im 2>&1
+    exit 1
+fi
+
+BUILD_USER="$1"
+BUILD_GID=`id "$BUILD_USER" -g`
+
+mkdir /usr/local/assetbank
+chown "$BUILD_USER:$BUILD_GID" /usr/local/assetbank
+
+# This results in ghostscript being installed and then immediately removed,
+# but there doesn't seem to be a way to install all the build-deps of a
+# package *except* a particular package.
+apt-get build-dep -y ghostscript imagemagick && apt-get remove -y ghostscript
