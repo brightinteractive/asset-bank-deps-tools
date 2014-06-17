@@ -40,7 +40,7 @@ Set the following environment variables (either in your user's shell or in
 /etc/default/tomcat6):
 
     LD_LIBRARY_PATH=/usr/local/assetbank/ffmpeg/lib
-    PATH="/usr/local/assetbank/{ffmpeg,ghostscript,imagemagick}/bin:$PATH"
+    PATH="/usr/local/assetbank/ffmpeg/bin:/usr/local/assetbank/ghostscript/bin:/usr/local/assetbank/imagemagick/bin:$PATH"
     export LD_LIBRARY_PATH PATH
 
 /usr/local/assetbank/{ffmpeg,ghostscript,imagemagick} are symlinks to allow
