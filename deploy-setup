@@ -1,0 +1,37 @@
+#!/bin/bash
+# One-off root setup steps required on machines used to run the binaries
+# built by build-ab-gs-im and build-ab-ffmpeg
+
+set -e
+
+if [ $UID -ne 0 ]; then
+    echo This script must be run as root >&2
+    exit 1
+fi
+
+# If this fails then add:
+#  deb http://www.deb-multimedia.org wheezy main non-free
+# to /etc/apt/sources.list and then do:
+#  apt-get update
+#  apt-get install deb-multimedia-keyring
+#  apt-get update
+#apt-get install libfaac0
+apt-get install libfaac-dev
+
+# This next part is a mess, because when I installed the dependent libraries
+# in either of the clean ways (the first 2 lines) on fandango then the
+# binaries built on my wheezy VM failed to run due to missing libraries. So I
+# had to add in some extra libraries manually.
+
+# Install dependencies of ghostscript ffmpeg imagemagick packages, but not those packages themselves
+apt-get install `apt-cache depends ghostscript ffmpeg imagemagick | grep -E 'Depends: [^<]' | sed -e 's/^.*Depends: *//' | sort | uniq`
+# Install build deps of ghostscript and imagemagick. This fixed some of the missing libraries on fandango. No ffmpeg because 'apt-get build-dep ffmpeg' fails on fandango with:
+# Picking 'ffmpeg-dmo' as source package instead of 'ffmpeg'
+# E: Unable to find a source package for ffmpeg-dmo
+apt-get build-dep -y ghostscript imagemagick
+# Install the remaining missing libraries manually.
+apt-get install libfftw3-3 libx264-123
+
+apt-get remove -y ghostscript
+apt-get remove ffmpeg
+apt-get remove imagemagick

@@ -1,5 +1,5 @@
 #!/bin/bash
-# One-off root setup steps required by build-ab-gs-im
+# One-off root setup steps required on machines used to run build-ab-gs-im and build-ab-ffmpeg
 
 set -e
 

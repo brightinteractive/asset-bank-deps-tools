@@ -14,7 +14,7 @@ if [ $UID -eq 0 ]; then
 fi
 
 if [ ! -d /usr/local/assetbank ]; then
-    echo /usr/local/assetbank does not exist, please run setup 2>&1
+    echo /usr/local/assetbank does not exist, please run build-setup 2>&1
     exit 1
 fi
 

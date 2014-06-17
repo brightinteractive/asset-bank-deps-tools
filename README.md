@@ -11,7 +11,7 @@ Build Setup
 -----------
 On any machine that will be used to *build* these tools, run:
 
-    ./setup
+    ./build-setup
 
 this only needs to be run once, not every time you do a build.
 
@@ -36,6 +36,12 @@ Run:
 
 Using the built tools
 ---------------------
+Run:
+
+    ./deploy-setup
+
+Untar the prebuilt binaries into /usr/local/assetbank.
+
 Set the following environment variables (either in your user's shell or in
 /etc/default/tomcat6):
 
